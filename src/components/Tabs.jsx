@@ -8,7 +8,7 @@ export const Tabs = ({ isActive, button }) => {
           {button}
         </div>
       ) : (
-        <div className="h-8 rounded-md flex items-center justify-center px-3 py-1 text-[12px] text-black bg-[#F3F4F6]">
+        <div className="h-8 rounded-md flex items-center justify-center px-3 py-1 text-[12px] text-[#363636] bg-[#F3F4F6]">
           {button}
         </div>
       )}
