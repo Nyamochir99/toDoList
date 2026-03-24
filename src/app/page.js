@@ -1,7 +1,13 @@
 import { Container } from "@/components/Container";
+import { Tabs } from "@/components/Tabs";
 import Image from "next/image";
 
 export default function Home() {
+  const buttons = [
+    { button: "All", isActive: true },
+    { button: "Active", isActive: false },
+    { button: "Completed", isActive: false },
+  ];
   return (
     <div className="w-screen h-screen flex items-start justify-center bg-white pt-30">
       <div className="flex flex-col w-94.25 px-4 py-6 items-center rounded-md bg-white shadow-[0_0_12px_0_rgba(0,0,0,0.16)]">
@@ -15,7 +21,17 @@ export default function Home() {
               Add
             </div>
           </div>
-          <div className="flex justify-start gap-1.5 "></div>
+          <div className="flex justify-start gap-1.5 ">
+            {buttons.map((element, key) => {
+              return (
+                <Tabs
+                  key={key}
+                  button={element.button}
+                  isActive={element.isActive}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
