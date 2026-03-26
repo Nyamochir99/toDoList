@@ -12,6 +12,10 @@ export const TaskContainer = ({
     newTasks[index].isCompleted = !newTasks[index].isCompleted;
     updateTasks(newTasks);
   };
+  const handleClick = () => {
+    const filteredTasks = allTasks.filter((_, i) => i !== index);
+    updateTasks(filteredTasks);
+  };
   return (
     <div className="w-86.25 h-15.5 bg-[#F9FAFB] rounded-md flex p-4 items-center justify-between transition duration-150 group hover:bg-[#F3F4F6]">
       <div className="flex items-center gap-2.5 ">
@@ -30,7 +34,10 @@ export const TaskContainer = ({
           {taskName}
         </label>
       </div>
-      <div className="hidden group-hover:block flex transition duration-150 items-center justify-center py-1.5 px-3 rounded-md bg-[#FEF2F2] text-[#EF4444] text-[14px] font-normal cursor-pointer hover:bg-[#ffe9e9]">
+      <div
+        onClick={handleClick}
+        className="hidden group-hover:flex transition duration-150 items-center justify-center py-1.5 px-3 rounded-md text-[#EF4444] text-[14px] font-normal cursor-pointer hover:bg-[#FEF2F2]"
+      >
         Delete
       </div>
     </div>

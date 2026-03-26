@@ -8,17 +8,32 @@ import { useState } from "react";
 
 export default function Home() {
   const buttons = [
-    { button: "All", isActive: true },
-    { button: "Active", isActive: false },
-    { button: "Completed", isActive: false },
+    { button: "All" },
+    { button: "Active" },
+    { button: "Completed" },
   ];
   const [tasks, setTasks] = useState([]);
-  const [inputTask, setInputTask] = useState({
-    taskName: "",
-    isCompleted: false,
-  });
+  const [inputTask, setInputTask] = useState("");
+  const [filter, setFilter] = useState("All");
   const handleClick = () => {
-    setTasks([inputTask, ...tasks]);
+    if (inputTask.length === 0) return;
+    setTasks([{ taskName: inputTask, isCompleted: false }, ...tasks]);
+    setInputTask("");
+  };
+  const handleTabs = (active) => {
+    setFilter(active);
+  };
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === "Active") return task.isCompleted === false;
+    if (filter === "Completed") return task.isCompleted === true;
+    return true;
+  });
+  const completedTasks = tasks.filter((task) => {
+    return task.isCompleted === true;
+  });
+  const deleteCompleted = () => {
+    const activeTasks = tasks.filter((task) => task.isCompleted === false);
+    setTasks(activeTasks);
   };
   return (
     <div className="w-screen flex items-start justify-center bg-white pt-30 pb-30">
@@ -28,7 +43,7 @@ export default function Home() {
             To-Do list
           </p>
           <div className="flex gap-1.5 h-10 w-full">
-            <Container setInputTask={setInputTask} />
+            <Container setInputTask={setInputTask} inputTask={inputTask} />
             <div
               onClick={handleClick}
               className="flex h-full w-14.75 py-2 px-4 items-center rounded-md bg-[#3C82F6] text-[#F9F9F9] text-[14px] font-normal cursor-pointer"
@@ -40,26 +55,48 @@ export default function Home() {
             {buttons.map((element, key) => {
               return (
                 <Tabs
+                  handleTabs={handleTabs}
+                  filter={filter}
                   key={key}
                   button={element.button}
-                  isActive={element.isActive}
                 />
               );
             })}
           </div>
           <div className="flex flex-col gap-5">
-            {tasks.map((task, index) => {
-              return (
-                <TaskContainer
-                  taskName={task.taskName}
-                  isCompleted={task.isCompleted}
-                  key={index}
-                  index={index}
-                  allTasks={tasks}
-                  updateTasks={setTasks}
-                />
-              );
-            })}
+            <>
+              {tasks.length === 0 ? (
+                <div className="flex justify-center items-center text-[#6B7280] text-[14px] font-normal mt-5">
+                  No tasks yet. Add one above!
+                </div>
+              ) : (
+                <>
+                  {filteredTasks.map((task, index) => {
+                    return (
+                      <TaskContainer
+                        taskName={task.taskName}
+                        isCompleted={task.isCompleted}
+                        key={index}
+                        index={index}
+                        allTasks={tasks}
+                        updateTasks={setTasks}
+                      />
+                    );
+                  })}
+                  <div className="pt-4 flex justify-between border-t border-t-[#e4e4e7]">
+                    <div className="text-[14px] text-[#6B7280] font-normal cursor-pointer">
+                      {`${completedTasks.length} of ${tasks.length} tasks completed`}
+                    </div>
+                    <div
+                      onClick={deleteCompleted}
+                      className="text-[14px] text-[#EF4444] font-normal cursor-pointer"
+                    >
+                      Clear completed
+                    </div>
+                  </div>
+                </>
+              )}
+            </>
           </div>
         </div>
         <div className="flex mt-10 gap-1 items-center justify-center">
