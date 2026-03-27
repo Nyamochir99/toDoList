@@ -24,16 +24,20 @@ export default function Home() {
     setFilter(active);
   };
   const filteredTasks = tasks.filter((task) => {
-    if (filter === "Active") return task.isCompleted === false;
-    if (filter === "Completed") return task.isCompleted === true;
+    if (filter === "Active") return !task.isCompleted;
+    if (filter === "Completed") return task.isCompleted;
     return true;
   });
   const completedTasks = tasks.filter((task) => {
     return task.isCompleted === true;
   });
   const deleteCompleted = () => {
-    const activeTasks = tasks.filter((task) => task.isCompleted === false);
-    setTasks(activeTasks);
+    if (window.confirm("Are you sure delete all completed tasks?") === true) {
+      const activeTasks = tasks.filter((task) => task.isCompleted === false);
+      setTasks(activeTasks);
+    } else {
+      return;
+    }
   };
   return (
     <div className="w-screen flex items-start justify-center bg-white pt-30 pb-30">
