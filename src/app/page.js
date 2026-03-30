@@ -16,8 +16,16 @@ export default function Home() {
   const [inputTask, setInputTask] = useState("");
   const [filter, setFilter] = useState("All");
   const handleClick = () => {
-    if (inputTask.length === 0) return;
-    setTasks([{ taskName: inputTask, isCompleted: false }, ...tasks]);
+    let nospace = inputTask.trim(" ");
+    if (nospace.length === 0) {
+      alert("Task name cannot be empty. Please enter a valid task.");
+      setInputTask("");
+      return;
+    }
+    setTasks([
+      { taskName: inputTask, isCompleted: false, id: Date.now() },
+      ...tasks,
+    ]);
     setInputTask("");
   };
   const handleTabs = (active) => {
@@ -25,14 +33,19 @@ export default function Home() {
   };
   const filteredTasks = tasks.filter((task) => {
     if (filter === "Active") return !task.isCompleted;
+
     if (filter === "Completed") return task.isCompleted;
     return true;
   });
+  console.log(tasks);
   const completedTasks = tasks.filter((task) => {
     return task.isCompleted === true;
   });
   const deleteCompleted = () => {
-    if (window.confirm("Are you sure delete all completed tasks?") === true) {
+    if (
+      window.confirm("Are you sure you want to delete all completed tasks?") ===
+      true
+    ) {
       const activeTasks = tasks.filter((task) => task.isCompleted === false);
       setTasks(activeTasks);
     } else {
@@ -80,7 +93,8 @@ export default function Home() {
                       <TaskContainer
                         taskName={task.taskName}
                         isCompleted={task.isCompleted}
-                        key={index}
+                        key={task.id}
+                        id={task.id}
                         index={index}
                         allTasks={tasks}
                         updateTasks={setTasks}
@@ -88,7 +102,7 @@ export default function Home() {
                     );
                   })}
                   <div className="pt-4 flex justify-between border-t border-t-[#e4e4e7]">
-                    <div className="text-[14px] text-[#6B7280] font-normal cursor-pointer">
+                    <div className="text-[14px] text-[#6B7280] font-normal">
                       {`${completedTasks.length} of ${tasks.length} tasks completed`}
                     </div>
                     <div

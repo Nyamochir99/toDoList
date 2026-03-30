@@ -3,18 +3,20 @@ import React from "react";
 export const TaskContainer = ({
   taskName,
   isCompleted,
-  index,
+  id,
   allTasks,
   updateTasks,
 }) => {
   const handleChecked = () => {
-    const newTasks = [...allTasks];
-    newTasks[index].isCompleted = !newTasks[index].isCompleted;
-    updateTasks(newTasks);
+    updateTasks(
+      allTasks.map((task) =>
+        task.id === id ? { ...task, isCompleted: !task.isCompleted } : task,
+      ),
+    );
   };
   const handleClick = () => {
-    if (window.confirm("Are you sure?") === true) {
-      const filteredTasks = allTasks.filter((_, i) => i !== index);
+    if (window.confirm("Are you sure delete this task?") === true) {
+      const filteredTasks = allTasks.filter((task) => task.id !== id);
       updateTasks(filteredTasks);
     } else {
       return;
@@ -26,10 +28,10 @@ export const TaskContainer = ({
         <input
           className="w-5 h-5 cursor-pointer peer"
           type="checkbox"
-          id={`toDo-${index}`}
+          id={id}
           name="isDone"
           checked={isCompleted}
-          onChange={handleChecked}
+          onChange={() => handleChecked(id)}
         />
         <label
           className="text-black text-[14px] font-normal peer-checked:line-through transition delay-150"
@@ -38,6 +40,7 @@ export const TaskContainer = ({
           {taskName}
         </label>
       </div>
+      <div></div>
       <div
         onClick={handleClick}
         className="hidden group-hover:flex transition duration-150 items-center justify-center py-1.5 px-3 rounded-md text-[#EF4444] text-[14px] font-normal cursor-pointer hover:bg-[#FEF2F2]"
