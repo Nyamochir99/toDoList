@@ -9,6 +9,7 @@ import { useState } from "react";
 export default function Home() {
   const buttons = [
     { button: "All" },
+    { button: "Important" },
     { button: "Active" },
     { button: "Completed" },
   ];
@@ -22,18 +23,28 @@ export default function Home() {
       setInputTask("");
       return;
     }
-    setTasks([
-      { taskName: inputTask, isCompleted: false, id: Date.now() },
+    const updatedTasks = [
+      {
+        taskName: inputTask,
+        isCompleted: false,
+        isImportant: false,
+        id: Date.now(),
+      },
       ...tasks,
-    ]);
+    ];
     setInputTask("");
+    const sortedTasks = [...updatedTasks].sort(
+      (a, b) => b.isImportant - a.isImportant,
+    );
+    setTasks(sortedTasks);
   };
+
   const handleTabs = (active) => {
     setFilter(active);
   };
   const filteredTasks = tasks.filter((task) => {
     if (filter === "Active") return !task.isCompleted;
-
+    if (filter === "Important") return task.isImportant;
     if (filter === "Completed") return task.isCompleted;
     return true;
   });
@@ -60,7 +71,11 @@ export default function Home() {
             To-Do list
           </p>
           <div className="flex gap-1.5 h-10 w-full">
-            <Container setInputTask={setInputTask} inputTask={inputTask} />
+            <Container
+              setInputTask={setInputTask}
+              inputTask={inputTask}
+              kbEnter={handleClick}
+            />
             <div
               onClick={handleClick}
               className="flex h-full w-14.75 py-2 px-4 items-center rounded-md bg-[#3C82F6] text-[#F9F9F9] text-[14px] font-normal cursor-pointer"
@@ -98,6 +113,7 @@ export default function Home() {
                         index={index}
                         allTasks={tasks}
                         updateTasks={setTasks}
+                        isImportant={task.isImportant}
                       />
                     );
                   })}
